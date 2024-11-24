@@ -21,7 +21,7 @@ public interface ParticipantRepository extends
     void removeParticipant(@Param("participantId") Long participantId, @Param("conversationId") Long conversationId);
 
     @Modifying
-    @Query(value = "SELECT P FROM Participant p JOIN p.user u JOIN p.conversation c WHERE u.id = (:userId) AND c.id IN (:conversationIds)")
+    @Query(value = "SELECT p FROM Participant p JOIN p.user u JOIN p.conversation c WHERE u.id = (:userId) AND c.id IN (:conversationIds)")
     List<Participant> findByConversationIdsAndUserId(@Param("userId") Long userId, @Param("conversationIds") List<Long> conversationIds);
 
 }
