@@ -1,0 +1,35 @@
+spring:
+  datasource:
+    name: chat_app
+    url: jdbc:postgresql://localhost:5432/chat_app
+    database: chat_app
+    username: chat_app
+    password: password
+#    driver-class-name: com.postgresql.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        show-sql: true
+        jdbc:
+          lob:
+            non_contextual_creation: true
+    defer-datasource-initialization: true
+#  main:
+#    allow-bean-definition-overriding: true
+server:
+  port: 8082
+google:
+  mail:
+    smtp:
+      host: smtp.gmail.com
+      port: 465
+      username: ntmquan282@gmail.com
+      password: zzpa cyqo nnon emva
+s3:
+  region: ap-southeast-2
+  endpointUrl: https://s3.${s3.region}.amazonaws.com
+  accessKey: AKIA5G2VGORCPKHQEWVA
+  secretKey: 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
+  bucketName: chat-app-bucket.sa
