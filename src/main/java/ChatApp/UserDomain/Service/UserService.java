@@ -139,8 +139,12 @@ public class UserService implements UserDetailsService {
         User user = this.userRepository.findById(userId).orElse(null);
         if (Objects.isNull(user))
             throw new IllegalArgumentException("Failed to update profile photo (Reason: can not find user)");
-        if (Objects.nonNull(user.getProfilePhoto()))
-            this.s3Service.deleteS3File(user.getProfilePhoto());
+        if (Objects.nonNull(user.getProfilePhoto())) {
+            String fullPath = user.getProfilePhoto();
+            String[] splitPath = fullPath.split("/");
+            System.out.println("S3 file delete path : "+ String.format("%s/%s", S3Service.FileType.PROFILE.getLabel(), splitPath[splitPath.length - 1]));
+             this.s3Service.deleteS3File(String.format("%s/%s", S3Service.FileType.PROFILE.getLabel(), splitPath[splitPath.length - 1]));
+        }
 
         String imgUploadName = UUID.randomUUID().toString();
         File imgFile = new File(imgUploadName);
