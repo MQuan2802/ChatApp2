@@ -21,10 +21,7 @@ import org.springframework.util.CollectionUtils;
 
 import javax.persistence.EntityManager;
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -62,6 +59,7 @@ public class ConversationService {
 
         Conversation conversation = new Conversation();
         conversation.setAdmin(request.getAdmin());
+        conversation.setLastMessageTime(Calendar.getInstance());
 //        conversation.setName(StringUtils.isBlank(request.getName()) ?  request.getName() :
 //                StringUtils.join(users.stream().map(user -> user.getName()).collect(Collectors.toList()), ','));
         Conversation savedConversation = this.repository.save(conversation);

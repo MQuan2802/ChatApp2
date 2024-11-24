@@ -52,7 +52,8 @@ public class Participant extends BaseEntity {
                 jsonGenerator.writeNumberField("conversationId", t.conversation.getId());
                 jsonGenerator.writeStringField("participantName", t.user.getName());
                 jsonGenerator.writeNumberField("lastView", t.getLastView().getTimeInMillis());
-                jsonGenerator.writeNumberField("id", t.getId());
+                jsonGenerator.writeStringField("profilePhoto", t.user.getProfilePhoto());
+//                jsonGenerator.writeNumberField("id", t.getId());
                 jsonGenerator.writeEndObject();
             }
         }
