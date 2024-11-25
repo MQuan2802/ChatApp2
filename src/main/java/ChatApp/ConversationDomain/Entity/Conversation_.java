@@ -14,5 +14,6 @@ public class Conversation_ extends BaseEntity_ {
     public static volatile SingularAttribute<Conversation, Conversation.State> status;
     public static volatile ListAttribute<Conversation, Participant> participants;
     public static volatile SingularAttribute<Conversation, Calendar> lastMessageTime;
+    public static volatile SingularAttribute<Conversation, Boolean> privateChat;
 
 }

@@ -69,7 +69,16 @@ public class ConversationSpecs {
             if (Objects.isNull(participantUserId)) {
                 return criteriaBuilder.conjunction();
             }
-            return criteriaBuilder.equal(root.join(Conversation_.participants).get(User_.id), participantUserId);
+            return criteriaBuilder.equal(root.join(Conversation_.participants).get(Participant_.user).get(User_.id), participantUserId);
+        };
+    }
+
+    public static Specification<Conversation> filterByParticipantPhone(String phone) {
+        return (root, query, criteriaBuilder) -> {
+            if (StringUtils.isBlank(phone)) {
+                return criteriaBuilder.conjunction();
+            }
+            return criteriaBuilder.like(root.join(Conversation_.participants).get(Participant_.user).get(User_.username), "%" + phone.toLowerCase() + "%");
         };
     }
 

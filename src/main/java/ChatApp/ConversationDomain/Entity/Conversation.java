@@ -28,6 +28,9 @@ public class Conversation extends BaseEntity {
     @Column(name = "last_message_time")
     Calendar lastMessageTime;
 
+    @Column(name = "is_private_chat")
+    boolean privateChat;
+
     @Column
     @Enumerated(EnumType.STRING)
     private State status = State.ACTIVE;

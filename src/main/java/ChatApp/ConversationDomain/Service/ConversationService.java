@@ -60,6 +60,8 @@ public class ConversationService {
         Conversation conversation = new Conversation();
         conversation.setAdmin(request.getAdmin());
         conversation.setLastMessageTime(Calendar.getInstance());
+        if (users.size() < 3)
+            conversation.setPrivateChat(true);
 //        conversation.setName(StringUtils.isBlank(request.getName()) ?  request.getName() :
 //                StringUtils.join(users.stream().map(user -> user.getName()).collect(Collectors.toList()), ','));
         Conversation savedConversation = this.repository.save(conversation);

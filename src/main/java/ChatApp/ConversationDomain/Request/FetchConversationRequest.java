@@ -19,7 +19,6 @@ public class FetchConversationRequest {
     String name;
     List<Long> creatorIds;
     Long participantUserId;
-
     Sort.Direction sortDir = Sort.Direction.DESC;
 
     String sortProperty = "lastMessageTime";

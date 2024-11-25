@@ -7,8 +7,8 @@ insert into  chat_user values (4, '2024-11-07'::timestamp, '1998-02-28', 'ntmqua
 ----id|creation_time|status|updated_by|friend_id|requested_user
 insert into friend_ship values (1, '2024-07-07'::timestamp, 'ACTIVE', 2, 1);
 insert into friend_ship values (2, '2024-07-07'::timestamp, 'ACTIVE', 3, 1);
-----id|creation_time|admin|last_message_time|status
-insert into conversation values (1, '2027-07-07'::timestamp, 1, '2024-11-11'::timestamp, 'ACTIVE');
+----id|creation_time|admin|last_message_time|is_private_chat|status
+insert into conversation values (1, '2027-07-07'::timestamp, 1, '2024-11-11'::timestamp, false, 'ACTIVE');
 --id|creation_time|conversation_display_name|last_view|conversation_id|user_id
 insert into participant values (1, '2024-07-07'::timestamp, 'conv1', '2024-11-11 10:00:00'::timestamp, 1, 1);
 insert into participant values (2, '2024-07-07'::timestamp, 'conv1', '2024-11-11 10:00:00'::timestamp, 1, 2);

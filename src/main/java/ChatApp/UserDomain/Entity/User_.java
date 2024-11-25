@@ -1,8 +1,5 @@
 package ChatApp.UserDomain.Entity;
 
-import ChatApp.UserDomain.Entity.BaseEntity_;
-import ChatApp.UserDomain.Entity.User;
-
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
