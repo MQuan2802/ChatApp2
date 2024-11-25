@@ -18,18 +18,18 @@ public class ClientMessageSessionDto {
     private Instant creationTime;
     private WebSocketSession session;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (Objects.isNull(o) || !Objects.equals(this.getClass(), o.getClass()))
-            return false;
-        WebSocketSession webSocketSession = (WebSocketSession) o;
-        return StringUtils.equals(this.session.getId(), webSocketSession.getId());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(this.session, this.creationTime);
-    }
+//    @Override
+//    public boolean equals(Object o) {
+//        if (this == o)
+//            return true;
+//        if (Objects.isNull(o) || !Objects.equals(this.getClass(), o.getClass()))
+//            return false;
+//        WebSocketSession webSocketSession = (WebSocketSession) o;
+//        return StringUtils.equals(this.session.getId(), webSocketSession.getId());
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        return Objects.hash(this.session, this.creationTime);
+//    }
 }

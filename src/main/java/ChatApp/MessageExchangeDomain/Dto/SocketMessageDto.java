@@ -2,6 +2,7 @@ package ChatApp.MessageExchangeDomain.Dto;
 
 import ChatApp.ConversationDomain.Entity.ChatMessage;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
@@ -19,6 +20,7 @@ public class SocketMessageDto {
     private Long senderId;
 
     @JsonProperty("senderParticipantId")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Long senderParticipantId;
 
     @JsonProperty("content")

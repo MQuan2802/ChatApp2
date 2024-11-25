@@ -1,5 +1,7 @@
 package ChatApp.MessageExchangeDomain.Handler;
 
+import ChatApp.AutowireHelper;
+import ChatApp.ConversationDomain.Entity.ChatMessage;
 import ChatApp.ConversationDomain.Service.ChatMessageService;
 import ChatApp.MessageExchangeDomain.Dto.ClientMessageSessionDto;
 import ChatApp.MessageExchangeDomain.Dto.SocketMessageDto;
@@ -15,10 +17,13 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class SocketTextHandler extends TextWebSocketHandler {
 
@@ -32,11 +37,20 @@ public class SocketTextHandler extends TextWebSocketHandler {
     @Autowired
     private UserService userService;
 
+    @PostConstruct
+    public void init() {
+        AutowireHelper.autowire(this, this.chatMessageService);
+        AutowireHelper.autowire(this, this.userService);
+    }
+
     @Override
     public void handleTextMessage(WebSocketSession session, TextMessage message)
             throws InterruptedException, IOException {
+        AutowireHelper.autowire(this, this.chatMessageService);
+        AutowireHelper.autowire(this, this.userService);
         String payload = message.getPayload();
         SocketMessageDto socketMessage = (new ObjectMapper()).readValue(payload, SocketMessageDto.class);
+        logger.info("socketMessage :"+ socketMessage);
         logger.info("websocket session {} recieved message: {}", session.getId(), payload);
 
         switch (socketMessage.getContentType()) {
@@ -50,16 +64,19 @@ public class SocketTextHandler extends TextWebSocketHandler {
             case TEXT:
             case ADD_PARTICIPANT:
             case REMOVE_PARTICIPANT:
-                socketMessage.setCreationTime(this.chatMessageService.createMessage(socketMessage).getCreationTime());
-                List<Long> recipientUserIds = this.userService.getUserIdsInConversation(socketMessage.getConversationId());
+                logger.info("saved message:"+this.chatMessageService);
+                ChatMessage savedMessage = this.chatMessageService.createMessage(socketMessage);
+                socketMessage.setCreationTime(savedMessage.getCreationTime());
+                List<Long> recipientUserIds = this.userService.getUserIdsInConversation(socketMessage.getConversationId())
+                        .stream().map(id -> id.longValue()).collect(Collectors.toList());
                 if (CollectionUtils.isNotEmpty(recipientUserIds)) {
-                    recipientUserIds.forEach(id -> {
+                    recipientUserIds.stream().filter(id -> !id.equals(savedMessage.getSender())).forEach(id -> {
                         Collection<ClientMessageSessionDto> sessionDtos = sessionMap.get(id);
                         if (CollectionUtils.isNotEmpty(sessionDtos)) {
                             sessionDtos.forEach(dto -> {
                                 try {
-                                    String savedMessage = (new ObjectMapper()).writeValueAsString(socketMessage);
-                                    dto.getSession().sendMessage(new TextMessage(savedMessage));
+                                    String stringMessage = (new ObjectMapper()).writeValueAsString(socketMessage);
+                                    dto.getSession().sendMessage(new TextMessage(stringMessage));
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }

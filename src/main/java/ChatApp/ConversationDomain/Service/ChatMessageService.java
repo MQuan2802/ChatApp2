@@ -27,12 +27,12 @@ public class ChatMessageService {
     @Autowired
     private ConversationRepository conversationRepository;
 
-    @Transactional
+    @Transactional(rollbackFor = {IllegalArgumentException.class})
     public ChatMessage createMessage(SocketMessageDto messageDto){
-        Assert.isTrue(Objects.isNull(messageDto.getConversationId()), "Failed to add new message (Reason: invalid conversationId).");
+        Assert.isTrue(Objects.nonNull(messageDto.getConversationId()), "Failed to add new message (Reason: invalid conversationId).");
         Conversation conversation = this.conversationRepository.findById(messageDto.getConversationId()).orElse(null);
 
-        Assert.isTrue(Objects.isNull(conversation), "Failed to add new message (Reason: can not find conversation).");
+        Assert.isTrue(Objects.nonNull(conversation), "Failed to add new message (Reason: can not find conversation).");
 
         conversation.setLastMessageTime(Calendar.getInstance());
         ChatMessage newMessage = ChatMessage.builder()

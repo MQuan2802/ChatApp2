@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class SocketImageHandler extends BinaryWebSocketHandler {
 
@@ -57,7 +58,10 @@ public class SocketImageHandler extends BinaryWebSocketHandler {
 
         ByteBuffer payload = message.getPayload().asReadOnlyBuffer();
         Map<String, String> messageMetaData = this.processImage(payload);
-        List<Long> recipientUserIds = this.userService.getUserIdsInConversation(Long.valueOf(messageMetaData.get("conversationId")));
+        List<Long> recipientUserIds = this.userService.getUserIdsInConversation(Long.valueOf(messageMetaData.get("conversationId")))
+                .stream()
+                .map(id -> id.longValue())
+                .collect(Collectors.toList());
         SocketMessageDto socketMessageDto = SocketMessageDto.builder()
                 .content(messageMetaData.get("content"))
                 .conversationId(Long.valueOf(messageMetaData.get("conversationId")))

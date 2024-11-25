@@ -27,6 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import java.io.File;
+import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -100,7 +101,7 @@ public class UserService implements UserDetailsService {
         return this.userRepository.findById(id).orElse(null);
     }
 
-    public List<Long> getUserIdsInConversation(Long conversationId) {
+    public List<BigInteger> getUserIdsInConversation(Long conversationId) {
         Assert.isTrue(Objects.nonNull(conversationId), "Failed to query conversation user ids (Reason: invalid conversation id).");
         return this.userRepository.getUserIdsInConversation(conversationId);
     }

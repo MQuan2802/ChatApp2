@@ -11,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -30,7 +31,7 @@ public interface UserRepository extends
     Optional<User> findById(Long id);
 
     @Query(value = "SELECT user_id FROM participant WHERE conversation_id = (:conversationId)", nativeQuery = true)
-    List<Long> getUserIdsInConversation(@Param("conversationId") Long conversationId);
+    List<BigInteger> getUserIdsInConversation(@Param("conversationId") Long conversationId);
 
     @Query(value = "SELECT count(phone_number) FROM chat_user where phone_number = (:phone)", nativeQuery = true)
     Long countDuplicatePhone(@Param("phone") String phone);
