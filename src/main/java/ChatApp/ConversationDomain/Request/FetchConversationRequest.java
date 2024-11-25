@@ -18,8 +18,10 @@ public class FetchConversationRequest {
     List<Long> conversationIds;
     String name;
     List<Long> creatorIds;
-    Long participantUserId;
+    List<Long> participantUserIds;
+    String phone;
     Sort.Direction sortDir = Sort.Direction.DESC;
+    Boolean privateChat;
 
     String sortProperty = "lastMessageTime";
 

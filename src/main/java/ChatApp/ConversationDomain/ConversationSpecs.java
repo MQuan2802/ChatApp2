@@ -4,12 +4,18 @@ import ChatApp.ConversationDomain.Entity.Conversation;
 import ChatApp.ConversationDomain.Entity.Conversation_;
 import ChatApp.ConversationDomain.Entity.Participant;
 import ChatApp.ConversationDomain.Entity.Participant_;
+import ChatApp.UserDomain.Entity.User;
 import ChatApp.UserDomain.Entity.User_;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.SneakyThrows;
 import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.Join;
+import javax.persistence.criteria.Predicate;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -60,16 +66,74 @@ public class ConversationSpecs {
             if (validIds.isEmpty()) {
                 return criteriaBuilder.disjunction();
             }
+            query.distinct(true);
             return root.get(Conversation_.status).in(statuses);
         };
     }
 
-    public static Specification<Conversation> filterByParticipantId(Long participantUserId) {
+    @SneakyThrows
+    public static Specification<Conversation> filterByParticipantIdsV1(List<Long> participantUserIds) {
+        return (root, query, criteriaBuilder) -> {
+            if (Objects.isNull(participantUserIds)) {
+                return criteriaBuilder.conjunction();
+            }
+            try {
+                System.out.println("filter with Participant user Id: "+ new ObjectMapper().writeValueAsString(participantUserIds));
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
+            query.distinct(true);
+//            return criteriaBuilder.equal(root.join(Conversation_.participants).get(Participant_.user).get(User_.id), participantUserId);
+            return root.join(Conversation_.participants).get(Participant_.user).get(User_.id).in(participantUserIds);
+
+        };
+    }
+
+    @SneakyThrows
+    public static Specification<Conversation> filterByParticipantIdsV3(List<Long> participantUserIds) {
+        return (root, query, criteriaBuilder) -> {
+            if (Objects.isNull(participantUserIds)) {
+                return criteriaBuilder.conjunction();
+            }
+            try {
+                System.out.println("filter with Participant user Id: "+ new ObjectMapper().writeValueAsString(participantUserIds));
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
+            query.distinct(true);
+//            return criteriaBuilder.equal(root.join(Conversation_.participants).get(Participant_.user).get(User_.id), participantUserId);
+            Predicate finalPredicate = null;
+
+            for (Long participantUserId : participantUserIds) {
+                Join<Conversation, Participant> participantsJoin = root.join(Conversation_.participants);
+                Join<Participant, User> userJoin = participantsJoin.join(Participant_.user);
+                Predicate userPredicate = criteriaBuilder.equal(userJoin.get(User_.id), participantUserId);
+
+                if (finalPredicate == null) {
+                    finalPredicate = userPredicate;
+                } else {
+                    finalPredicate = criteriaBuilder.and(finalPredicate, userPredicate);
+                }
+            }
+            return finalPredicate;
+        };
+    }
+
+    @SneakyThrows
+    public static Specification<Conversation> filterByParticipantIdV2(Long participantUserId) {
         return (root, query, criteriaBuilder) -> {
             if (Objects.isNull(participantUserId)) {
                 return criteriaBuilder.conjunction();
             }
+            try {
+                System.out.println("filter with Participant user Id: "+ new ObjectMapper().writeValueAsString(participantUserId));
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
+            query.distinct(true);
             return criteriaBuilder.equal(root.join(Conversation_.participants).get(Participant_.user).get(User_.id), participantUserId);
+//            return root.join(Conversation_.participants).get(Participant_.user).get(User_.id).in(participantUserId);
+
         };
     }
 
@@ -78,7 +142,17 @@ public class ConversationSpecs {
             if (StringUtils.isBlank(phone)) {
                 return criteriaBuilder.conjunction();
             }
+            query.distinct(true);
             return criteriaBuilder.like(root.join(Conversation_.participants).get(Participant_.user).get(User_.username), "%" + phone.toLowerCase() + "%");
+        };
+    }
+
+    public static Specification<Conversation> filterByPrivateChat(Boolean privateChat) {
+        return (root, query, criteriaBuilder) -> {
+            if (Objects.isNull(privateChat))
+                return criteriaBuilder.conjunction();
+            query.distinct(true);
+            return criteriaBuilder.equal(root.get(Conversation_.privateChat), privateChat);
         };
     }
 
@@ -86,7 +160,6 @@ public class ConversationSpecs {
         return (root, query, criteriaBuilder) -> {
             if(StringUtils.isBlank(name) || Objects.isNull(participantUserId))
                 return criteriaBuilder.conjunction();
-            System.out.print("ahihi"+ Conversation_.participants);
             Join<Conversation, Participant> listJoin = root.join(Conversation_.participants);
             return criteriaBuilder.and(
                     criteriaBuilder.like(listJoin.get(Participant_.conversationDisplayName), "%" + name.toLowerCase() + "%"),
@@ -95,4 +168,16 @@ public class ConversationSpecs {
         };
     }
 
+
+    public static Specification<Conversation> filterByConversationName(String name) {
+        return (root, query, criteriaBuilder) -> {
+            if(StringUtils.isBlank(name))
+                return criteriaBuilder.conjunction();
+            Join<Conversation, Participant> listJoin = root.join(Conversation_.participants);
+            return
+                    criteriaBuilder.like(listJoin.get(Participant_.conversationDisplayName), "%" + name.toLowerCase() + "%");
+
+
+        };
+    }
 }

@@ -8,6 +8,7 @@ import org.hibernate.annotations.Where;
 import javax.persistence.*;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Getter
@@ -37,5 +38,20 @@ public class Conversation extends BaseEntity {
     public enum State {
         ACTIVE,
         ARCHIVED,
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this)
+            return true;
+        if (!(o instanceof Conversation))
+            return false;
+        Conversation conv = (Conversation) o;
+        return this.id.equals(conv.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

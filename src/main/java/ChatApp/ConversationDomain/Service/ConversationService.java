@@ -9,9 +9,14 @@ import ChatApp.ConversationDomain.Repository.ParticipantRepository;
 import ChatApp.ConversationDomain.Request.ConversationCreateRequest;
 import ChatApp.ConversationDomain.Request.ConversationUpdateRequest;
 import ChatApp.ConversationDomain.Request.FetchConversationRequest;
+import ChatApp.MessageExchangeDomain.Handler.SocketImageHandler;
 import ChatApp.UserDomain.Entity.SpecificationsBuilder;
 import ChatApp.UserDomain.Entity.User;
 import ChatApp.UserDomain.Service.UserService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.SneakyThrows;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -26,6 +31,9 @@ import java.util.stream.Collectors;
 
 @Service
 public class ConversationService {
+
+    public static final Logger logger = LoggerFactory.getLogger(ConversationService.class);
+
 
     @Autowired
     ConversationRepository repository;
@@ -130,13 +138,19 @@ public class ConversationService {
 
     }
 
+    @SneakyThrows
     public Iterable<Conversation> queryWithSpecification(FetchConversationRequest request) {
+        logger.info("query conversation sepcification with data: "+ new ObjectMapper().writeValueAsString(request));
         SpecificationsBuilder<Conversation> specificationsBuilder = new SpecificationsBuilder();
         specificationsBuilder.addSpecification(ConversationSpecs.filterByIds(request.getConversationIds()));
         specificationsBuilder.addSpecification(ConversationSpecs.filterByCreatorIds(request.getCreatorIds()));
-        specificationsBuilder.addSpecification(ConversationSpecs.filterByParticipantId(request.getParticipantUserId()));
-        specificationsBuilder.addSpecification(ConversationSpecs.filterByConversationName(request.getName(), request.getParticipantUserId()));
+//        if (CollectionUtils.isEmpty(request.getParticipantUserIds()))
+//            request.getParticipantUserIds().forEach(userId -> specificationsBuilder.addSpecification(ConversationSpecs.filterByParticipantId(userId)));
+        specificationsBuilder.addSpecification(ConversationSpecs.filterByParticipantIdsV3(request.getParticipantUserIds()));
+        specificationsBuilder.addSpecification(ConversationSpecs.filterByConversationName(request.getName()));
+        specificationsBuilder.addSpecification(ConversationSpecs.filterByParticipantPhone(request.getPhone()));
+        specificationsBuilder.addSpecification(ConversationSpecs.filterByPrivateChat(request.getPrivateChat()));
 //        specificationsBuilder.addSpecification(ConversationSpecs.filterByStatus(states));
-        return this.repository.findAll(specificationsBuilder.build(),new PageRequest(request.getPage(), request.getPageSize(), request.getSortDir(), request.getSortProperty()));
+        return this.repository.findAll(specificationsBuilder.build(),new PageRequest(request.getPage(), request.getPageSize(), request.getSortDir(), request.getSortProperty(), "privateChat"));
     }
 }
