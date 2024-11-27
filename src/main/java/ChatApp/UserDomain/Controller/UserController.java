@@ -130,8 +130,9 @@ public class UserController {
 
     @RequestMapping(value = "update/avatar", method = RequestMethod.POST)
     public ResponseEntity updateAvatar (@RequestParam("file") MultipartFile file,
-                                        @RequestParam("userId") @NonNull Long userId) {
-        this.userService.updateAvatar(file, userId);
+                                        @RequestParam("userId") @NonNull Long userId,
+                                        @RequestParam("extension") @NotBlank String extension) {
+        this.userService.updateAvatar(file, userId, extension);
         return ResponseEntity.ok("ok");
     }
 

@@ -9,7 +9,6 @@ import ChatApp.ConversationDomain.Repository.ParticipantRepository;
 import ChatApp.ConversationDomain.Request.ConversationCreateRequest;
 import ChatApp.ConversationDomain.Request.ConversationUpdateRequest;
 import ChatApp.ConversationDomain.Request.FetchConversationRequest;
-import ChatApp.MessageExchangeDomain.Handler.SocketImageHandler;
 import ChatApp.UserDomain.Entity.SpecificationsBuilder;
 import ChatApp.UserDomain.Entity.User;
 import ChatApp.UserDomain.Service.UserService;

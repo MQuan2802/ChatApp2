@@ -23,7 +23,7 @@ insert into participant values (5, '2024-07-07'::timestamp, 'conv1', '2024-11-11
 insert into participant values (6, '2024-07-07'::timestamp, 'conv1', '2024-11-11 10:00:00'::timestamp, 3, 1);
 insert into participant values (7, '2024-07-07'::timestamp, 'conv1', '2024-11-11 10:00:00'::timestamp, 3, 3);
 --id|creation_time|content|content_type|sender|conversation_id
-insert into chat_message values (1, '2024-07-07'::timestamp, 'test message1', 'TEXT', 1, 1);
-insert into chat_message values (2, '2024-07-07'::timestamp, 'test message1', 'TEXT', 2, 1);
-insert into chat_message values (3, '2024-07-07'::timestamp, 'test message1', 'TEXT', 3, 1);
+--insert into chat_message values (1, '2024-07-07'::timestamp, 'test message1', 'TEXT', 1, 1);
+--insert into chat_message values (2, '2024-07-07'::timestamp, 'test message1', 'TEXT', 2, 1);
+--insert into chat_message values (3, '2024-07-07'::timestamp, 'test message1', 'TEXT', 3, 1);
 

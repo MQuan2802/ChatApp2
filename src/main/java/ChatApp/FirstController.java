@@ -47,16 +47,6 @@ public class FirstController {
         return ("Service is alive");
     }
 
-    @RequestMapping(value = "test/s3/upload/image", method = RequestMethod.GET)
-        public String testS3UploadImage() throws IOException {
-        String filePath = "/Users/quannguyen/Desktop/softwareArchitecture/webSocketImageHandler.png";
-        byte[] fileBytes = Files.readAllBytes(Paths.get(filePath));
-
-        File imgFile = new File("webSocketImageHandler.png");
-        String imgName = String.format("%s_%s", "webSocketImageHandler.png", UUID.randomUUID().toString());
-        FileUtils.writeByteArrayToFile(imgFile, fileBytes);
-        return this.s3Service.uploadFile(imgFile, imgName, S3Service.FileType.DOCUMENT);
-    }
 
     @RequestMapping(value = "/testSendingMail", method = RequestMethod.GET)
     public ResponseEntity testSendingMail() {

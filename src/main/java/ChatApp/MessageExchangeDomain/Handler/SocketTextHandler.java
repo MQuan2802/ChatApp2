@@ -23,13 +23,14 @@ import java.math.BigInteger;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class SocketTextHandler extends TextWebSocketHandler {
 
     public static MultiValuedMap<Long, ClientMessageSessionDto> sessionMap = new ArrayListValuedHashMap<>();
 
-    public static final Logger logger = LoggerFactory.getLogger(SocketImageHandler.class);
+    public static final Logger logger = LoggerFactory.getLogger(SocketTextHandler.class);
 
     @Autowired
     private ChatMessageService chatMessageService;
@@ -62,6 +63,8 @@ public class SocketTextHandler extends TextWebSocketHandler {
                     sessionMap.put(socketMessage.getSenderId(),sessionDto);
                 break;
             case TEXT:
+            case IMAGE:
+            case VIDEO:
             case ADD_PARTICIPANT:
             case REMOVE_PARTICIPANT:
                 logger.info("saved message:"+this.chatMessageService);
@@ -73,7 +76,7 @@ public class SocketTextHandler extends TextWebSocketHandler {
                     recipientUserIds.stream().filter(id -> !id.equals(savedMessage.getSender())).forEach(id -> {
                         Collection<ClientMessageSessionDto> sessionDtos = sessionMap.get(id);
                         if (CollectionUtils.isNotEmpty(sessionDtos)) {
-                            sessionDtos.forEach(dto -> {
+                            sessionDtos.stream().filter(dto -> Objects.nonNull(dto.getSession()) && dto.getSession().isOpen()).forEach(dto -> {
                                 try {
                                     String stringMessage = (new ObjectMapper()).writeValueAsString(socketMessage);
                                     dto.getSession().sendMessage(new TextMessage(stringMessage));

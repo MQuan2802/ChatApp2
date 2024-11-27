@@ -136,7 +136,7 @@ public class UserService implements UserDetailsService {
 
     @SneakyThrows
     @Transactional
-    public void updateAvatar(MultipartFile file, Long userId) {
+    public void updateAvatar(MultipartFile file, Long userId, String extension) {
         User user = this.userRepository.findById(userId).orElse(null);
         if (Objects.isNull(user))
             throw new IllegalArgumentException("Failed to update profile photo (Reason: can not find user)");
@@ -150,7 +150,7 @@ public class UserService implements UserDetailsService {
         String imgUploadName = UUID.randomUUID().toString();
         File imgFile = new File(imgUploadName);
         FileUtils.writeByteArrayToFile(imgFile, file.getBytes());
-        String s3Link = this.s3Service.uploadFile(imgFile, imgUploadName, S3Service.FileType.PROFILE);
+        String s3Link = this.s3Service.uploadFile(imgFile, imgUploadName, S3Service.FileType.PROFILE, extension);
         user.setProfilePhoto(s3Link);
         this.userRepository.save(user);
     }

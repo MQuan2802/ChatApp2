@@ -73,6 +73,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/ping").permitAll()
                 .antMatchers("/api/test/s3").permitAll()
                 .antMatchers("/text").permitAll()
+                .antMatchers("/image").permitAll()
+                .antMatchers("/document").permitAll()
                 .antMatchers("/api/test/s3/upload/image").permitAll()
                 .antMatchers("/api/send/mail/verify_code").permitAll()
                 .antMatchers("/api/send/phone/verify_code").permitAll()

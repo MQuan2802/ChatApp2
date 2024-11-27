@@ -1,7 +1,6 @@
 package ChatApp.FileExchangeDomain.Service;
 
 
-import ChatApp.MessageExchangeDomain.Handler.SocketDocumentHandler;
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3;
@@ -12,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 
 
@@ -22,7 +20,7 @@ import java.io.File;
 @Service
 public class S3Service {
 
-    public static final Logger logger = LoggerFactory.getLogger(SocketDocumentHandler.class);
+    public static final Logger logger = LoggerFactory.getLogger(S3Service.class);
 
     @Value("${s3.accessKey}")
     private String accessKey;
@@ -44,11 +42,11 @@ public class S3Service {
         this.s3Client = new AmazonS3Client(credentials);
     }
 
-    public String uploadFile(File file, String fileName, FileType fileType) {
+    public String uploadFile(File file, String fileName, FileType fileType, String extension) {
         String fileUrl = "";
         try {
             fileUrl = String.format("%s/%s/%s/%s", endpointUrl, bucketName, fileType.getLabel(), fileName);
-            uploadFileTos3bucket(fileName, fileType.getLabel(), file);
+            uploadFileTos3bucket(fileName, fileType.getLabel(), file, extension);
 //            file.delete();
         } catch (Exception e) {
             e.printStackTrace();
@@ -56,8 +54,8 @@ public class S3Service {
         return fileUrl;
     }
 
-    private void uploadFileTos3bucket(String fileName, String directory, File file) {
-        this.s3Client.putObject(new PutObjectRequest(bucketName, String.format("%s/%s", directory, fileName), file)
+    private void uploadFileTos3bucket(String fileName, String directory, File file, String extension) {
+        this.s3Client.putObject(new PutObjectRequest(bucketName, String.format("%s/%s.%s", directory, fileName, extension), file)
                 .withCannedAcl(CannedAccessControlList.PublicRead));
     }
 
