@@ -30,10 +30,11 @@ public class FileExchangeController {
 //        Assert.isTrue(Objects.nonNull(conversationId), "Failed to send File (Reason: invalid conversation Id).");
         Assert.isTrue(Objects.nonNull(contentType), "Failed to send File (Reason: invalid content type).");
         Assert.isTrue(Objects.nonNull(extension), "Failed to send File (Reason: invalide extension).");
-        this.fileUploadService.uploadFile(file, contentType, extension);
+        String s3Link = this.fileUploadService.uploadFile(file, contentType, extension);
 
         Map<String, Object> response = new HashMap<>();
         response.put("success", true);
+        response.put("link", s3Link);
         return ResponseEntity.ok(response);
     }
 }

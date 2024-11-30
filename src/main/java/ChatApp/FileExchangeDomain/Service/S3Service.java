@@ -45,7 +45,7 @@ public class S3Service {
     public String uploadFile(File file, String fileName, FileType fileType, String extension) {
         String fileUrl = "";
         try {
-            fileUrl = String.format("%s/%s/%s/%s", endpointUrl, bucketName, fileType.getLabel(), fileName);
+            fileUrl = String.format("%s/%s/%s/%s.%s", endpointUrl, bucketName, fileType.getLabel(), fileName, extension);
             uploadFileTos3bucket(fileName, fileType.getLabel(), file, extension);
 //            file.delete();
         } catch (Exception e) {
