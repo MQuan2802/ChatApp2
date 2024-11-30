@@ -50,6 +50,7 @@ public class SocketTextHandler extends TextWebSocketHandler {
         AutowireHelper.autowire(this, this.chatMessageService);
         AutowireHelper.autowire(this, this.userService);
         String payload = message.getPayload();
+        session.sendMessage(new TextMessage("Server recieved message"));
         SocketMessageDto socketMessage = (new ObjectMapper()).readValue(payload, SocketMessageDto.class);
         logger.info("socketMessage :"+ socketMessage);
         logger.info("websocket session {} recieved message: {}", session.getId(), payload);
