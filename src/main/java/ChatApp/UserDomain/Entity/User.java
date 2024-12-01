@@ -73,6 +73,7 @@ public class User extends BaseEntity {
                 jsonGenerator.writeStringField("UserName", t.getName());
                 jsonGenerator.writeStringField("phoneNumber", t.getUsername());
                 jsonGenerator.writeNumberField("id", t.getId());
+                jsonGenerator.writeStringField("profilePhoto", t.getProfilePhoto());
                 if (Objects.nonNull(t.getFriendStatus()))
                     jsonGenerator.writeStringField("friendStatus", t.getFriendStatus().toString());
                 jsonGenerator.writeEndObject();
