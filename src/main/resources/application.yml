@@ -16,6 +16,10 @@ spring:
           lob:
             non_contextual_creation: true
     defer-datasource-initialization: true
+  servlet:
+    multipart:
+      max-file-size: 200MB
+      max-request-size: 200MB
 #  main:
 #    allow-bean-definition-overriding: true
 server:
