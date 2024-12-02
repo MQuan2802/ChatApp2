@@ -132,8 +132,11 @@ public class UserController {
     public ResponseEntity updateAvatar (@RequestParam("file") MultipartFile file,
                                         @RequestParam("userId") @NonNull Long userId,
                                         @RequestParam("extension") @NotBlank String extension) {
-        this.userService.updateAvatar(file, userId, extension);
-        return ResponseEntity.ok("ok");
+        String s3Link = this.userService.updateAvatar(file, userId, extension);
+        Map<String, Object> response = new HashMap<>();
+        response.put("link", s3Link);
+        response.put("success", true);
+        return ResponseEntity.ok(response);
     }
 
 }
