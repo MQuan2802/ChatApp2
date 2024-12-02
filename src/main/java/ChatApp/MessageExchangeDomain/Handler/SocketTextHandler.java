@@ -66,6 +66,7 @@ public class SocketTextHandler extends TextWebSocketHandler {
             case TEXT:
             case IMAGE:
             case VIDEO:
+            case DOCUMENT:
             case ADD_PARTICIPANT:
             case REMOVE_PARTICIPANT:
                 logger.info("saved message:"+this.chatMessageService);
