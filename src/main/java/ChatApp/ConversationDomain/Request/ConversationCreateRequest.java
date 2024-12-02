@@ -10,7 +10,7 @@ import java.util.List;
 @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ConversationCreateRequest {
-    private Long Admin;
+    private Long admin;
     private List<Long> participants;
     private String name;
 }

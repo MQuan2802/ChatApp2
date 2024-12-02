@@ -12,6 +12,7 @@ import ChatApp.ConversationDomain.Request.FetchConversationRequest;
 import ChatApp.UserDomain.Entity.SpecificationsBuilder;
 import ChatApp.UserDomain.Entity.User;
 import ChatApp.UserDomain.Service.UserService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import org.slf4j.Logger;
@@ -61,6 +62,7 @@ public class ConversationService {
         if (CollectionUtils.isEmpty(request.getParticipants()))
             throw new IllegalArgumentException("Failed to create conversation (Reason: invalid participants).");
         List<User> users = this.chatUserService.getByIds(request.getParticipants());
+        String adminName = users.stream().filter(user -> user.getId().equals(request.getAdmin())).map(user -> user.getName()).findFirst().orElse("");
 
         if (CollectionUtils.isEmpty(request.getParticipants()))
             throw new IllegalArgumentException("Failed to create conversation (Reason: invalid users).");
@@ -72,18 +74,23 @@ public class ConversationService {
             conversation.setPrivateChat(true);
 //        conversation.setName(StringUtils.isBlank(request.getName()) ?  request.getName() :
 //                StringUtils.join(users.stream().map(user -> user.getName()).collect(Collectors.toList()), ','));
-        Conversation savedConversation = this.repository.save(conversation);
-        Map<Long, String> conversationNames = this.generateConversationDisplayNameMap(users, request.getAdmin(), request.getName());
+        Conversation savedConversation = this.repository.saveAndFlush(conversation);
+        Map<Long, String> conversationNames = this.generateConversationDisplayNameMap(users, request.getAdmin(), adminName, request.getName());
 
         List<Participant> savedParticipants = users.stream()
                 .map(user -> this.participantService.create(savedConversation, user, conversationNames.get(user.getId()))).collect(Collectors.toList());
         savedConversation.setParticipants(savedParticipants);
+        try {
+            new ObjectMapper().writeValueAsString(savedConversation);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
 
         return new ConversationDTO(savedConversation);
     }
 
 
-    public Map<Long, String> generateConversationDisplayNameMap(List<User> users, Long admin, String requestGroupName) {
+    public Map<Long, String> generateConversationDisplayNameMap(List<User> users, Long admin, String adminName, String requestGroupName) {
         if (CollectionUtils.isEmpty(users))
             return new HashMap<>();
         if (users.size() == 2) {
@@ -96,7 +103,7 @@ public class ConversationService {
         Map<Long, String> result = new HashMap<>();
         String conversationName = requestGroupName;
         if (StringUtils.isEmpty(requestGroupName))
-            conversationName = String.format("%s, %s...", admin, users.stream().filter(user -> !user.getId().equals(admin)).findFirst().orElse(null));
+            conversationName = String.format("%s, %s...", adminName, users.stream().filter(user -> !user.getId().equals(admin)).map(user -> user.getName()).findFirst().orElse(null));
         String finalConversationName = conversationName;
         users.forEach(user -> result.put(user.getId(), finalConversationName));
         return result;

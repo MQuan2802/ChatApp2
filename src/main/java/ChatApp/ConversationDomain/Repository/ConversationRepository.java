@@ -1,6 +1,7 @@
 package ChatApp.ConversationDomain.Repository;
 
 import ChatApp.ConversationDomain.Entity.Conversation;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -15,6 +16,7 @@ import java.util.Optional;
 @Repository
 public interface ConversationRepository extends
         CrudRepository<Conversation, Long>,
+        JpaRepository<Conversation, Long>,
         JpaSpecificationExecutor<Conversation>,
         Serializable {
 

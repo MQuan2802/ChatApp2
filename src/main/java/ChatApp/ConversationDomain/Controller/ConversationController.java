@@ -38,8 +38,13 @@ public class ConversationController {
 
     @RequestMapping(value = "/generate", method = RequestMethod.POST)
     public ConversationDTO generateConversation(@RequestBody ConversationCreateRequest request) {
-        return this.service.create(request);
-
+        ConversationDTO result = new ConversationDTO();
+        try {
+             result = this.service.create(request);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 
     @RequestMapping(value = "/add/participant", method = RequestMethod.POST)

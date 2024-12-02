@@ -35,6 +35,11 @@ public class Participant extends BaseEntity {
     @Column(name = "conversation_display_name")
     private String conversationDisplayName;
 
+    @PrePersist
+    public void init() {
+        lastView = Calendar.getInstance();
+    }
+
     public static class ToDto extends JsonSerializer<Participant> {
 
         @Override

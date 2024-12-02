@@ -13,6 +13,7 @@ import java.util.Objects;
 @Entity
 @Getter
 @Setter
+@Table
 @Where(clause = "status <> 'ARCHIVED'")
 public class Conversation extends BaseEntity {
 
