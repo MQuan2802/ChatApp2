@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.EntityManager;
 import java.time.LocalDate;
@@ -72,7 +73,7 @@ public class ConversationService {
 //        conversation.setName(StringUtils.isBlank(request.getName()) ?  request.getName() :
 //                StringUtils.join(users.stream().map(user -> user.getName()).collect(Collectors.toList()), ','));
         Conversation savedConversation = this.repository.save(conversation);
-        Map<Long, String> conversationNames = this.generateConversationDisplayNameMap(users, request.getAdmin());
+        Map<Long, String> conversationNames = this.generateConversationDisplayNameMap(users, request.getAdmin(), request.getName());
 
         List<Participant> savedParticipants = users.stream()
                 .map(user -> this.participantService.create(savedConversation, user, conversationNames.get(user.getId()))).collect(Collectors.toList());
@@ -82,7 +83,7 @@ public class ConversationService {
     }
 
 
-    public Map<Long, String> generateConversationDisplayNameMap(List<User> users, Long admin) {
+    public Map<Long, String> generateConversationDisplayNameMap(List<User> users, Long admin, String requestGroupName) {
         if (CollectionUtils.isEmpty(users))
             return new HashMap<>();
         if (users.size() == 2) {
@@ -93,8 +94,11 @@ public class ConversationService {
         }
 
         Map<Long, String> result = new HashMap<>();
-        String conversationName = String.format("%s, %s...", admin, users.stream().filter(user -> !user.getId().equals(admin)).findFirst().orElse(null));
-        users.forEach(user -> result.put(user.getId(), conversationName));
+        String conversationName = requestGroupName;
+        if (StringUtils.isEmpty(requestGroupName))
+            conversationName = String.format("%s, %s...", admin, users.stream().filter(user -> !user.getId().equals(admin)).findFirst().orElse(null));
+        String finalConversationName = conversationName;
+        users.forEach(user -> result.put(user.getId(), finalConversationName));
         return result;
     }
 
