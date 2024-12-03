@@ -63,7 +63,7 @@ public class UserService implements UserDetailsService {
         user.setUsername(request.getUsername());
         user.setEmail(request.getEmail());
         user.setDateOfBirth(request.getDateOfBrith());
-        user.setPassword(passwordEncoder.encode("password"));
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
         return this.userRepository.save(user);
     }
 

@@ -16,7 +16,7 @@ insert into friend_ship values (2, '2024-07-07'::timestamp, 'ACTIVE', 3, 1);
 ----id|creation_time|admin|last_message_time|is_private_chat|status
 insert into conversation values (1, '2027-07-07'::timestamp, 1, '2024-11-11'::timestamp, false, 'ACTIVE');
 insert into conversation values (2, '2027-07-07'::timestamp, 1, '2024-11-11'::timestamp, true, 'ACTIVE');
-insert into conversation values (3, '2027-07-07'::timestamp, 1, '2024-11-11'::timestamp, false, 'ACTIVE');
+insert into conversation values (3, '2027-07-07'::timestamp, 1, '2024-11-11'::timestamp, true, 'ACTIVE');
 
 --id|creation_time|conversation_display_name|last_view|conversation_id|user_id
 insert into participant values (1, '2024-07-07'::timestamp, 'conv1', '2024-11-11 10:00:00'::timestamp, 1, 1);

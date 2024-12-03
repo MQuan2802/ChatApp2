@@ -2,6 +2,7 @@ package ChatApp.UserDomain.Controller;
 
 import ChatApp.AuthenticatorDomain.Filter.JwtTokenProvider;
 import ChatApp.MailService;
+import ChatApp.MessageExchangeDomain.Handler.SocketTextHandler;
 import ChatApp.MessageExchangeDomain.SMS.SMSService;
 import ChatApp.UserDomain.Entity.User;
 import ChatApp.UserDomain.Request.FetchUserRequest;
@@ -10,6 +11,10 @@ import ChatApp.UserDomain.Request.SignUpRequest;
 import ChatApp.UserDomain.Response.LoginResponse;
 import ChatApp.UserDomain.Service.CustomUserDetails;
 import ChatApp.UserDomain.Service.UserService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
@@ -48,8 +53,12 @@ public class UserController {
     @Autowired
     private SMSService smsService;
 
+    public static final Logger logger = LoggerFactory.getLogger(SocketTextHandler.class);
+
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public LoginResponse authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+    public LoginResponse authenticateUser(@Valid @RequestBody LoginRequest loginRequest) throws JsonProcessingException {
+        logger.info(new ObjectMapper().writeValueAsString(loginRequest));
+
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginRequest.getUsername(),
