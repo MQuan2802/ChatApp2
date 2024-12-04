@@ -24,7 +24,7 @@ public class Conversation extends BaseEntity {
     @Where(clause = "id IN (SELECT id FROM chat_message WHERE (true) ORDER BY creation_time DESC LIMIT 30)")
     List<ChatMessage> chatMessages;
 
-    @OneToMany(mappedBy = "conversation")
+    @OneToMany(mappedBy = "conversation", cascade = CascadeType.ALL)
     List<Participant> participants;
 
     @Column(name = "last_message_time")
