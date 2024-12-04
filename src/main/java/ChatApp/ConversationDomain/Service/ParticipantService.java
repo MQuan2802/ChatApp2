@@ -33,8 +33,8 @@ public class ParticipantService {
     @Transactional
     public void removeParticipant(Long userId, Long conversationId) {
         Conversation conversation = this.conversationRepository.findById(conversationId).orElse(null);
-        Assert.isTrue(Objects.isNull(conversation), "Failed to remove participant (Reason: cannot find conversation)");
-        Assert.isTrue(conversation.getParticipants().size() < 2, "Failed to remove participant (Reason: cannot remove all the participants)");
+        Assert.isTrue(Objects.nonNull(conversation), "Failed to remove participant (Reason: cannot find conversation)");
+        Assert.isTrue(conversation.getParticipants().size() > 1, "Failed to remove participant (Reason: cannot remove all the participants)");
         conversation.getParticipants().removeIf(participant -> participant.getUser().getId().equals(userId));
         this.conversationRepository.save(conversation);
     }
