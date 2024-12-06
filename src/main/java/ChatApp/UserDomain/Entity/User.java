@@ -76,6 +76,8 @@ public class User extends BaseEntity {
                 jsonGenerator.writeStringField("profilePhoto", t.getProfilePhoto());
                 if (Objects.nonNull(t.getFriendStatus()))
                     jsonGenerator.writeStringField("friendStatus", t.getFriendStatus().toString());
+                jsonGenerator.writeStringField("dateOfBirth", t.getDateOfBirth().toString());
+                jsonGenerator.writeStringField("mail", t.getEmail());
                 jsonGenerator.writeEndObject();
             }
         }
