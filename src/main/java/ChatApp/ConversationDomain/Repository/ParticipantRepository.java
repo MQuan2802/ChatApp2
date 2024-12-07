@@ -16,7 +16,7 @@ public interface ParticipantRepository extends
         JpaSpecificationExecutor<Participant>,
         Serializable {
 
-    @Query(value = "DELETE FROM participant WHERE id = (:participantId) AND conversation_id = (:conversationId);", nativeQuery = true)
+    @Query(value = "DELETE FROM participant WHERE user_id = (:participantId) AND conversation_id = (:conversationId);", nativeQuery = true)
     @Modifying
     void removeParticipant(@Param("participantId") Long participantId, @Param("conversationId") Long conversationId);
 
