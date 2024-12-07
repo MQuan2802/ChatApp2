@@ -61,11 +61,16 @@ public class ConversationController {
     }
 
     @RequestMapping(value = "/remove/participant", method = RequestMethod.DELETE)
-    public ResponseEntity removeParticipant(@RequestParam("participantId") Long participantId,
-                                            @RequestParam("conversationId") Long conversationId) {
-        Assert.isTrue(Objects.nonNull(participantId), "Failed to remove participant (Reason: invalid participantId).");
+    public ResponseEntity removeParticipant(@RequestParam(name = "participantId", required = false) Long participantId,
+                                            @RequestParam("conversationId") Long conversationId,
+                                            @RequestParam(name = "isConvArch", required = false, defaultValue = "false") boolean isConvArchived) {
+        Assert.isTrue(Objects.nonNull(participantId) || isConvArchived, "Failed to remove participant (Reason: invalid participantId).");
         Assert.isTrue(Objects.nonNull(conversationId), "Failed to remove participant (Reason: invalid conversationId).");
-        this.participantService.removeParticipant(participantId, conversationId);
+        if (isConvArchived) {
+            this.archieveConversation(conversationId);
+        } else {
+            this.participantService.removeParticipant(participantId, conversationId);
+        }
         Map<String, Object> response = new HashMap<>();
         response.put("success", true);
         response.put("message", "OK");
